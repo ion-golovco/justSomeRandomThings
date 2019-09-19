@@ -89,12 +89,12 @@ function draw() {
             text(i, x2, y2 / 4 + 5)
         }
     }
-    
+    {
         fill(51)
         textAlign(LEFT)
         text("Curent : " + x.toFixed(fix), 10 - w / 2, 20)
         text("Scope : " + scope.toFixed(fix), 10 - w / 2, 40)
-    
+    }
 }
 function incremental(n, inc) {
     return n = n + inc
