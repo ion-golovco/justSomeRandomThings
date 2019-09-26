@@ -1,6 +1,6 @@
 let w, h
 //particles
-let particleLimit = 500;
+let particleLimit = 1000;
 let particles = [];
 //masses
 let mass = [];
@@ -12,14 +12,14 @@ let yStart;
 //particle trough mass field range (amplified by mass)
 //             r1 r2 r3 r4
 //              V  V  V  V
-let ptmfr = [20, 10, 5, 2, 1]
+let ptmfr = [20, 10, 5, 0.2, 0.1]
 //r1 = a+ or a- && v-
 //r2 = a++ or a-- && v++
 //r3 = a+++ or a--- && v+++
 //r4 = orbit && v++
 
 //default Velocity Range [5,10] or [4,8]
-let dVr = [4, 8]
+let dVr = [4, 10]
 //default Angle Range
 let dAr = [0, 0]
 //friction constant
@@ -27,24 +27,24 @@ let fr = 0.01
 //angle increment
 let inc = .07
 //historyLimit
-let hiL = 15
+let hiL = 2
 //y range
-let yrange = [0, 100]
+let yrange = [48, 52]
 let x, y;
 function setup() {
     createCanvas(windowWidth, windowHeight - 4)
     w = windowWidth
     h = windowHeight
     yStart = (h / 2) - 1
-    x = w / 2
+    x = w / 4
     y = h / 2
     createParticles()
     angleMode(DEGREES)
     //mass.push(new Mass(w / 2, h/2, 10))
-    mass.push(new Mass(x, y, 20, -1))
-    //mass.push(new Mass(w / 2, h / 4, 20, -1))
-    //mass.push(new Mass(w / 2, h / 1.25, 20, -1))
-    massRange()
+    //mass.push(new Mass(x, y, 50, 1))
+    mass.push(new Mass(x,y, 20, -1))
+    mass.push(new Mass(x*3, h / 2, 20, -1))
+    massRange() 
 }
 
 let np, nn = 0, na = [];
@@ -59,13 +59,12 @@ function draw() {
     }
     if (np == 1) {
         for (let i in na) {
-            for (let k in mass) {
-                particles[na[i][0]].a < na[i][1] ? particles[na[i][0]].a += inc * mass[k].n
-                    : particles[na[i][0]].a -= inc * mass[k].n
-                if (particles[na[i][0]].x < mass[k].x) {
+
+                particles[na[i][0]].a < na[i][1] ? particles[na[i][0]].a += inc * mass[0].n
+                    : particles[na[i][0]].a -= inc * mass[0].n
+                if (particles[na[i][0]].x < mass[0].x) {
                     na.splice(i, 1)
                     nn = 0
-                }
                 nn++
             }
         }
@@ -74,7 +73,7 @@ function draw() {
     noStroke()
     for (let i of particles) {
         i.history.push([i.x, i.y])
-        i.u !== true ? fill(i.v * 10, 120, i.a * 20) : fill(205, 0, 0)
+        i.u !== true ? fill(i.v * 10, 120, i.a * 20) : 0//fill(205, 0, 0)
         i.check()
         i.go();
         i.reset();
@@ -93,6 +92,7 @@ function draw() {
     }
     for (let i of particles) {
         push()
+
         rotate(i.a)
         //fill(160, (255 / h) * i.y, i.a * 20, (2550 / i.history.length) * i)
         //circle(i.x, i.y, 2)
@@ -109,7 +109,7 @@ function draw() {
         pop()
     }
     for (let j of mass) {
-        fill(51, 10)
+        fill(51, 50)
         circle(j.x, j.y, j.m * 2)
     }
 } class Particle {
@@ -232,18 +232,18 @@ function rFullEffect(n, index) {
             incremental(particles[index].i, particles[index].a - 20)
             particles[index].v += 0.1
         } if (n == 3) {//r4
-            incremental(particles[index].i, particles[index].a - 60)
+            incremental(particles[index].i, particles[index].a - 40)
             particles[index].v += 0.2
         } if (n == 4) {
-            incremental(particles[index].i, particles[index].a - 120)
+           // incremental(particles[index].i, particles[index].a - 120)
             particles[index].v += 0.3
             // particles[index].d = -1
         } if (n == 5) {
-            incremental(particles[index].i, particles[index].a + 120)
+            //incremental(particles[index].i, particles[index].a + 120)
             particles[index].v += 0.3
             //particles[index].d = -1
         } if (n == 6) {
-            incremental(particles[index].i, particles[index].a + 60)
+            incremental(particles[index].i, particles[index].a + 40)
             particles[index].v += 0.2
         } if (n == 7) {
             incremental(particles[index].i, particles[index].a + 20)
